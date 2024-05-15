@@ -1,6 +1,7 @@
 # Import necassary libraries
 import tensorflow as tf
 from tensorflow import keras
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import sklearn
 import numpy as np
 np.random.seed(42)
@@ -72,3 +73,30 @@ for name in class_names:
     
 # Printing the balanced class distribution
 print("Class Distribution:\n", class_sizes)
+
+# Implementing Data Augementation 
+# Increases accuracy by allowing the model to detect altered images of animals correctly
+data_generator = ImageDataGenerator( # Initializing image data generator with the specified image transformations and preprocessing
+    rescale=1./255, # rescale: normalizes pixel values from 0-255 to 0-1
+    horizontal_flip=True, # horizontal_flip: randomly flips images horizontally
+    vertical_flip=True, # vertical_flip: randomly flips images vertically
+    rotation_range=20, # rotation_range: randomly rotates images by a given range in degrees
+    validation_split=0.2) # validation_split: splits the data into training and validation sets, with 20% of the data used for validation
+
+# Create training data
+train_data = data_generator.flow_from_directory( 
+    balanced_data_path, # Load training data from the specified directory and apply the generator
+    target_size=(256,256), # target_size: resizes the images to a specified size
+    class_mode='binary', # class_mode: specifies the type of label encoding, categorical for multiple classes
+    batch_size=32, # batch_size: specifies the number of samples per batch
+    shuffle=True, # shuffle: shuffles the data after each epoch
+    subset='training')  # subset: specifies the subset of data to load, in this case, the Training set
+
+# Create validation data
+valid_data = data_generator.flow_from_directory(
+    balanced_data_path, # Load validation data from the specified directory and apply the generator
+    target_size=(256,256), 
+    class_mode='binary', # class_mode: specifies the type of label encoding, categorical for multiple classes
+    batch_size=32, 
+    shuffle=True, 
+    subset='validation') # subset: specifies the subset of data to load validation data
