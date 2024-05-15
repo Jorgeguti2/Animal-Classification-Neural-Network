@@ -37,3 +37,24 @@ class_name_size = dict(zip(class_names, class_sizes))
 balanced_data_path = 'raw-img-balanced'
 # Seting the percentage of each class to sample
 sample_percent = 0.1
+# Looping through each class directory and copy 2000 images or less to the sampled data directory
+for class_name in os.listdir(skewed_data_path):
+    # Geting the path to the original class directory
+    class_path = os.path.join(skewed_data_path, class_name)
+    # Geting the path to the sampled class directory
+    sampled_class_path = os.path.join(balanced_data_path, class_name)
+    # Geting a list of all the image files in the class directory
+    image_files = os.listdir(class_path)
+    # Calculating the number of images to sample **************
+    image_class_size = class_name_size[class_name]
+    if image_class_size > 2000:
+        num_images = 2000
+    else:
+        num_images = int(image_class_size)
+     # Samplimg the images
+    sampled_images = np.random.choice(image_files, size=num_images, replace=False)
+    # Copying the sampled images to the sampled class directory
+    for image_name in sampled_images:
+        src_path = os.path.join(class_path, image_name)
+        dst_path = os.path.join(sampled_class_path, image_name)
+        shutil.copyfile(src_path, dst_path)
