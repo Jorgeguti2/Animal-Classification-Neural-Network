@@ -9,6 +9,10 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import os
 import shutil
+from keras import Sequential
+from tensorflow.keras.applications import ResNet152V2
+from keras.layers import Dense, GlobalAvgPool2D as GAP, Dropout,MaxPooling2D,BatchNormalization
+from keras.callbacks import ModelCheckpoint, EarlyStopping
 
 # Loading the Animal Dataset
 # giving path to the animals10 image dataset from kaggle 
@@ -124,5 +128,29 @@ def get_random_data(data_tuple):
     image, label = images[idx], labels[idx]
     # returning the selected image and label
     return image, label
+
+# Build Deep Learning Model
+# Creating a sequential model with the ResNet152V2 base model, a global average pooling layer, two fully connected layers, MaxPooling layer,BatchNormalization layer,and a final softmax classification layer.
+sequential_model = Sequential([
+    ResNet152V2(include_top=False, input_shape=(256,256,3), weights='imagenet', trainable = False), #Adding ResNet152V2 base model
+    MaxPooling2D(pool_size=(2, 2)),  # Adding Max Pooling with a 2x2 window
+    BatchNormalization(),  # Adding Batch Normalization
+    GAP(), # global average pooling layer to reduce dimension and parameters without losing important features
+    Dense(256, activation='relu'), #
+    Dropout(0.2), # adding droupout layer to prevent overfitting
+    Dense(num_classes, activation='softmax')
+], name=name)
+# Compile the model with sparse categorical cross-entropy as the loss function, Adam optimizer and accuracy as the evaluation metric.
+sequential_model.compile(
+    loss = 'sparse_categorical',
+    optimizer = 'adam',
+    metrics=['accuracy']
+)
+
+# Train the model using the training and validation datasets, using 50 epochs and the previously defined callbacks.
+history = sequential_model.fit(
+    train_data, validation_data=valid_data,
+    epochs=50, callbacks=[EarlyStopping(patience=3, restore_best_weights=True), ModelCheckpoint(name + ".keras", save_best_only=True)]
+)
 
 
