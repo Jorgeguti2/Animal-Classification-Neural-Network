@@ -8,6 +8,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import os
 
+# Loading the Animal Dataset
 # giving path to the animals10 image dataset from kaggle 
 data_path = 'raw-img-skewed'
 # Geting a list of all unique class names from the dataset path
@@ -31,4 +32,6 @@ print()
 #  converting lists to dictionary
 class_name_size = dict(zip(class_names, class_sizes))
 
-
+# Handling Data Imbalance
+# Seting the path to the directory where the sampled data will be saved
+sampled_data_path = r'/kaggle/working/sample-data'
