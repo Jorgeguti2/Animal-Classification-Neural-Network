@@ -6,10 +6,10 @@ import numpy as np
 np.random.seed(42)
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import os  # used for interacting with the file system
+import os
 
 # giving path to the animals10 image dataset from kaggle 
-data_path = 'raw-img'
+data_path = 'raw-img-skewed'
 # Geting a list of all unique class names from the dataset path
 class_names = sorted(os.listdir(data_path))
 # Counting the number of classes
