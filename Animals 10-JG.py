@@ -29,7 +29,7 @@ for name in class_names:
     class_size = len(os.listdir(skewed_data_path + "/" + name))
     class_sizes.append(class_size)
 # Printing the class distribution
-print("Class Distribution:\n", class_sizes)
+print("Class Distribution of Skewed:\n", class_sizes)
 print()
 #  converting lists to dictionary
 class_name_size = dict(zip(class_names, class_sizes))
@@ -72,7 +72,8 @@ for name in class_names:
     class_sizes.append(class_size)
     
 # Printing the balanced class distribution
-print("Class Distribution:\n", class_sizes)
+print("Class Distribution of Balanced:\n", class_sizes)
+print()
 
 # Implementing Data Augementation 
 # Increases accuracy by allowing the model to detect altered images of animals correctly
@@ -84,6 +85,7 @@ data_generator = ImageDataGenerator( # Initializing image data generator with th
     validation_split=0.2) # validation_split: splits the data into training and validation sets, with 20% of the data used for validation
 
 # Create training data
+print("Training data: ")
 train_data = data_generator.flow_from_directory( 
     balanced_data_path, # Load training data from the specified directory and apply the generator
     target_size=(256,256), # target_size: resizes the images to a specified size
@@ -91,8 +93,10 @@ train_data = data_generator.flow_from_directory(
     batch_size=32, # batch_size: specifies the number of samples per batch
     shuffle=True, # shuffle: shuffles the data after each epoch
     subset='training')  # subset: specifies the subset of data to load, in this case, the Training set
+print()
 
 # Create validation data
+print("Validation data: ")
 valid_data = data_generator.flow_from_directory(
     balanced_data_path, # Load validation data from the specified directory and apply the generator
     target_size=(256,256), 
@@ -100,3 +104,25 @@ valid_data = data_generator.flow_from_directory(
     batch_size=32, 
     shuffle=True, 
     subset='validation') # subset: specifies the subset of data to load validation data
+print()
+
+# Function used to plot images
+def show_image(image, image_title=None):
+    # Display the image
+    plt.imshow(image)
+    # Set the title of the plot if provided
+    plt.title(image_title)
+    # Turn off the axes in the plot
+    plt.axis('off')
+
+# Function to grab a random piece of data (image) from the dataset
+def get_random_data(data_tuple):
+    images, labels = data_tuple
+    # geting a random index for an image in the dataset
+    idx = np.random.randint(len(images))
+    # selecting the image and its corresponding label using the random index
+    image, label = images[idx], labels[idx]
+    # returning the selected image and label
+    return image, label
+
+
