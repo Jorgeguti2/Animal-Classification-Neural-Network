@@ -7,6 +7,7 @@ np.random.seed(42)
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import os
+import shutil
 
 # Loading the Animal Dataset
 # giving path to the animals10 image dataset from kaggle 
@@ -58,3 +59,16 @@ for class_name in os.listdir(skewed_data_path):
         src_path = os.path.join(class_path, image_name)
         dst_path = os.path.join(sampled_class_path, image_name)
         shutil.copyfile(src_path, dst_path)
+
+# Loading the Balanced Animal Dataset
+# Geting a list of class names from the sampled data directory
+class_names = sorted(os.listdir(balanced_data_path))
+# Geting the number of samples in each class
+class_sizes = []
+for name in class_names:
+    # Get the number of samples in the class directory
+    class_size = len(os.listdir(os.path.join(balanced_data_path, name)))
+    class_sizes.append(class_size)
+    
+# Printing the balanced class distribution
+print("Class Distribution:\n", class_sizes)
